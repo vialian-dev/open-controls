@@ -1,0 +1,4 @@
+metric,definition,value,unit,sample_size
+cycle_time,Request accepted to approved result,72,hours,48
+human_effort,Direct staff effort per unit,18,hours,48
+rework_rate,Units requiring correction divided by units completed,0.12,ratio,48

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://raw.githubusercontent.com/vialian-dev/open-controls/baseline-evidence-record-draft-0.1/specs/baseline-evidence-record/schema/baseline-evidence-record.schema.json",
+  "profile": "vialian.baseline-evidence-record",
+  "profile_version": "draft-0.1",
+  "baseline_id": "",
+  "revision": 2,
+  "lifecycle_status": "approved",
+  "created_at": "2026-11-23T10:00:00-05:00",
+  "purpose": {
+    "change_id": " ",
+    "description": "Revised comparison baseline for an AI-assisted delivery-evidence workflow",
+    "intended_comparison": "Cycle time after go-live"
+  },
+  "unit_of_work": {
+    "name": "Approved delivery evidence package",
+    "definition": "One complete evidence package accepted by the authorized approver",
+    "inclusions": ["Approved requests"],
+    "exclusions": ["Cancelled requests"]
+  },
+  "measurement_window": {
+    "start": "2026-10-01T00:00:00-04:00",
+    "end_exclusive": "2026-11-01T00:00:00-04:00",
+    "timezone": "America/Toronto",
+    "interval_semantics": "start_inclusive_end_exclusive"
+  },
+  "sample": {
+    "population": "Completed delivery-evidence requests",
+    "size": 48,
+    "inclusion_criteria": "Requests accepted and completed within the measurement window",
+    "exclusion_criteria": "Cancelled, training or test requests"
+  },
+  "metrics": [
+    {
+      "metric_id": " \t",
+      "name": "Cycle time",
+      "definition": "Elapsed time from accepted request to approved result",
+      "value": { "type": "decimal_string", "value": "72", "unit": "hours" },
+      "aggregation": "median",
+      "source_refs": [""],
+      "limitations": []
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "",
+      "description": "Aggregated baseline export",
+      "system": "Jira",
+      "reference": " ",
+      "storage": "included_aggregate",
+      "sha256": "f9b536d5d48ca418ddda6107a93d418789d29df22d8a0f8d34aa3000a2a8d884",
+      "contains_personal_data": false
+    }
+  ],
+  "ownership": {
+    "accountable_owner": { "role": "Program Manager" },
+    "approver": { "role": "Business Sponsor" }
+  },
+  "approval": {
+    "status": "approved",
+    "approved_at": "2026-11-23T10:15:00-05:00",
+    "decision_record_ref": "DEC-2026-043",
+    "scope": "Approved as the comparison baseline for the named AI change"
+  },
+  "planned_review": {
+    "review_date": "2027-02-23",
+    "comparison_purpose": "Measure cycle-time changes",
+    "outcome_evidence_source": "Operational reporting system"
+  },
+  "limitations": ["Synthetic aggregate example; not evidence of realized benefits."],
+  "supersedes": {
+    "baseline_id": " ",
+    "revision": 1,
+    "record_sha256": "fb7959fbba30f432dd17becf05ad7ab4a7f2f9a0529192fcd0646b890a54a75a"
+  },
+  "revision_reason": "Narrowed the comparison to cycle time"
+}

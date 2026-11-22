@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/vialian-dev/open-controls/baseline-evidence-record-draft-0.1/specs/baseline-evidence-record/schema/baseline-evidence-record.schema.json",
+  "profile": "vialian.baseline-evidence-record",
+  "profile_version": "draft-0.1",
+  "baseline_id": "BL-2026-002",
+  "revision": 1,
+  "lifecycle_status": "draft",
+  "created_at": "2026-11-23T08:45:00-05:00",
+  "purpose": {
+    "change_id": "AI-CHANGE-2026-015",
+    "description": "Working baseline for a synthetic request workflow",
+    "intended_comparison": "Cycle time after go-live"
+  },
+  "unit_of_work": {
+    "name": "Completed request",
+    "definition": "One request accepted and closed",
+    "inclusions": ["Completed requests"],
+    "exclusions": ["Cancelled requests"]
+  },
+  "measurement_window": {
+    "start": "2026-10-01T00:00:00-04:00",
+    "end_exclusive": "2026-11-01T00:00:00-04:00",
+    "timezone": "America/Toronto",
+    "interval_semantics": "start_inclusive_end_exclusive"
+  },
+  "sample": {
+    "population": "Completed requests",
+    "size": 0,
+    "inclusion_criteria": "Completed within the measurement window",
+    "exclusion_criteria": "Cancelled requests"
+  },
+  "metrics": [],
+  "sources": [],
+  "ownership": { "accountable_owner": { "role": "Program Manager" } },
+  "approval": { "status": "pending", "approved_at": "2026-11-23T09:00:00-05:00" },
+  "planned_review": {
+    "review_date": "2027-02-23",
+    "comparison_purpose": "Measure cycle-time changes",
+    "outcome_evidence_source": "Operational reporting system"
+  },
+  "limitations": ["Synthetic draft; metrics and sources are not yet recorded."]
+}

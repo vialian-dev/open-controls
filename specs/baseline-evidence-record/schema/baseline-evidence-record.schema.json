@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/vialian-dev/open-controls/baseline-evidence-record-draft-0.1/specs/baseline-evidence-record/schema/baseline-evidence-record.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "profile",
+    "profile_version",
+    "baseline_id",
+    "revision",
+    "lifecycle_status",
+    "created_at",
+    "purpose",
+    "unit_of_work",
+    "measurement_window",
+    "sample",
+    "metrics",
+    "sources",
+    "ownership",
+    "approval",
+    "planned_review",
+    "limitations"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/vialian-dev/open-controls/baseline-evidence-record-draft-0.1/specs/baseline-evidence-record/schema/baseline-evidence-record.schema.json"
+    },
+    "profile": { "type": "string", "const": "vialian.baseline-evidence-record" },
+    "profile_version": { "type": "string", "const": "draft-0.1" },
+    "baseline_id": { "$ref": "#/$defs/nonBlankString" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "lifecycle_status": { "type": "string", "enum": ["draft", "approved"] },
+    "created_at": { "$ref": "#/$defs/offsetDateTime" },
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_id", "description", "intended_comparison"],
+      "properties": {
+        "change_id": { "$ref": "#/$defs/nonBlankString" },
+        "description": { "type": "string" },
+        "intended_comparison": { "type": "string" }
+      }
+    },
+    "unit_of_work": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "definition", "inclusions", "exclusions"],
+      "properties": {
+        "name": { "type": "string" },
+        "definition": { "type": "string" },
+        "inclusions": { "$ref": "#/$defs/stringList" },
+        "exclusions": { "$ref": "#/$defs/stringList" }
+      }
+    },
+    "measurement_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end_exclusive", "timezone", "interval_semantics"],
+      "properties": {
+        "start": { "$ref": "#/$defs/offsetDateTime" },
+        "end_exclusive": { "$ref": "#/$defs/offsetDateTime" },
+        "timezone": { "$ref": "#/$defs/nonBlankString" },
+        "interval_semantics": { "type": "string", "const": "start_inclusive_end_exclusive" }
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["population", "size", "inclusion_criteria", "exclusion_criteria"],
+      "properties": {
+        "population": { "type": "string" },
+        "size": { "type": "integer", "minimum": 0 },
+        "inclusion_criteria": { "type": "string" },
+        "exclusion_criteria": { "type": "string" }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/metric" }
+    },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accountable_owner"],
+      "properties": {
+        "accountable_owner": { "$ref": "#/$defs/roleHolder" },
+        "approver": { "$ref": "#/$defs/roleHolder" }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pending", "approved"] },
+        "approved_at": { "$ref": "#/$defs/offsetDateTime" },
+        "decision_record_ref": { "$ref": "#/$defs/nonBlankString" },
+        "scope": { "$ref": "#/$defs/nonBlankString" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["status"],
+            "properties": { "status": { "const": "approved" } }
+          },
+          "then": { "required": ["decision_record_ref", "scope"] }
+        },
+        {
+          "if": {
+            "required": ["status"],
+            "properties": { "status": { "const": "pending" } }
+          },
+          "then": { "not": { "required": ["approved_at"] } }
+        }
+      ]
+    },
+    "planned_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_date", "comparison_purpose", "outcome_evidence_source"],
+      "properties": {
+        "review_date": { "type": "string", "format": "date" },
+        "comparison_purpose": { "type": "string" },
+        "outcome_evidence_source": { "type": "string" }
+      }
+    },
+    "limitations": { "$ref": "#/$defs/stringList" },
+    "supersedes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline_id", "revision", "record_sha256"],
+      "properties": {
+        "baseline_id": { "$ref": "#/$defs/nonBlankString" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "record_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "revision_reason": { "$ref": "#/$defs/nonBlankString" },
+    "extensions": { "type": "object", "additionalProperties": true }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["revision"],
+        "properties": { "revision": { "const": 1 } }
+      },
+      "then": { "not": { "required": ["supersedes"] } }
+    },
+    {
+      "if": {
+        "required": ["revision"],
+        "properties": { "revision": { "type": "integer", "minimum": 2 } }
+      },
+      "then": { "required": ["supersedes", "revision_reason"] }
+    },
+    {
+      "if": {
+        "required": ["lifecycle_status"],
+        "properties": { "lifecycle_status": { "const": "draft" } }
+      },
+      "then": {
+        "properties": {
+          "approval": {
+            "properties": { "status": { "not": { "const": "approved" } } }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["approval", "lifecycle_status"],
+        "properties": {
+          "lifecycle_status": { "enum": ["draft", "approved"] },
+          "approval": {
+            "type": "object",
+            "required": ["status"],
+            "properties": { "status": { "const": "approved" } }
+          }
+        }
+      },
+      "then": {
+        "properties": { "lifecycle_status": { "const": "approved" } }
+      }
+    },
+    {
+      "if": {
+        "required": ["lifecycle_status"],
+        "properties": { "lifecycle_status": { "const": "approved" } }
+      },
+      "then": {
+        "properties": {
+          "ownership": { "required": ["approver"] },
+          "approval": {
+            "required": ["approved_at"],
+            "properties": { "status": { "const": "approved" } }
+          },
+          "metrics": {
+            "minItems": 1,
+            "items": { "properties": { "source_refs": { "minItems": 1 } } }
+          },
+          "sources": { "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "nonBlankString": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "offsetDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "not": { "pattern": "[\\r\\n]" }
+    },
+    "sha256": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "roleHolder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role"],
+      "properties": {
+        "role": { "$ref": "#/$defs/nonBlankString" },
+        "name": { "type": "string" }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric_id", "name", "definition", "value", "aggregation", "source_refs", "limitations"],
+      "properties": {
+        "metric_id": { "$ref": "#/$defs/nonBlankString" },
+        "name": { "type": "string" },
+        "definition": { "type": "string" },
+        "value": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "value", "unit"],
+          "properties": {
+            "type": { "type": "string", "const": "decimal_string" },
+            "value": {
+              "type": "string",
+              "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$",
+              "not": { "pattern": "\\n" }
+            },
+            "unit": { "$ref": "#/$defs/nonBlankString" }
+          }
+        },
+        "aggregation": {
+          "type": "string",
+          "enum": ["count", "sum", "mean", "median", "ratio", "percentage", "minimum", "maximum", "custom"]
+        },
+        "aggregation_definition": { "$ref": "#/$defs/nonBlankString" },
+        "source_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonBlankString" }
+        },
+        "limitations": { "$ref": "#/$defs/stringList" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["aggregation"],
+            "properties": { "aggregation": { "const": "custom" } }
+          },
+          "then": { "required": ["aggregation_definition"] }
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "description", "system", "reference", "storage", "sha256", "contains_personal_data"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/nonBlankString" },
+        "description": { "type": "string" },
+        "system": { "type": "string" },
+        "reference": { "$ref": "#/$defs/nonBlankString" },
+        "storage": { "type": "string", "enum": ["hash_only", "external_reference", "included_aggregate"] },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "contains_personal_data": { "type": "boolean" }
+      }
+    }
+  }
+}

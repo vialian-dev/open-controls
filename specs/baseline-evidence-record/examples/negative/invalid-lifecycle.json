@@ -1,0 +1,121 @@
+{
+  "$schema": "https://raw.githubusercontent.com/vialian-dev/open-controls/baseline-evidence-record-draft-0.1/specs/baseline-evidence-record/schema/baseline-evidence-record.schema.json",
+  "profile": "vialian.baseline-evidence-record",
+  "profile_version": "draft-0.1",
+  "baseline_id": "BL-2026-001",
+  "revision": 1,
+  "lifecycle_status": "superseded",
+  "created_at": "2026-11-23T08:45:00-05:00",
+  "purpose": {
+    "change_id": "AI-CHANGE-2026-014",
+    "description": "Approved comparison baseline for an AI-assisted delivery-evidence workflow",
+    "intended_comparison": "Cycle time, human effort and rework after go-live"
+  },
+  "unit_of_work": {
+    "name": "Approved delivery evidence package",
+    "definition": "One complete evidence package accepted by the authorized approver",
+    "inclusions": [
+      "Request accepted",
+      "Evidence assembled",
+      "Human approval recorded"
+    ],
+    "exclusions": [
+      "Cancelled requests",
+      "Training and test requests"
+    ]
+  },
+  "measurement_window": {
+    "start": "2026-10-01T00:00:00-04:00",
+    "end_exclusive": "2026-11-01T00:00:00-04:00",
+    "timezone": "America/Toronto",
+    "interval_semantics": "start_inclusive_end_exclusive"
+  },
+  "sample": {
+    "population": "Completed delivery-evidence requests",
+    "size": 48,
+    "inclusion_criteria": "Requests accepted and completed within the measurement window",
+    "exclusion_criteria": "Cancelled, training or test requests"
+  },
+  "metrics": [
+    {
+      "metric_id": "cycle_time",
+      "name": "Cycle time",
+      "definition": "Elapsed time from accepted request to approved result",
+      "value": {
+        "type": "decimal_string",
+        "value": "72",
+        "unit": "hours"
+      },
+      "aggregation": "median",
+      "source_refs": [
+        "SRC-001"
+      ],
+      "limitations": []
+    },
+    {
+      "metric_id": "human_effort",
+      "name": "Human effort",
+      "definition": "Direct staff effort per unit",
+      "value": {
+        "type": "decimal_string",
+        "value": "18",
+        "unit": "hours"
+      },
+      "aggregation": "mean",
+      "source_refs": [
+        "SRC-001"
+      ],
+      "limitations": []
+    },
+    {
+      "metric_id": "rework_rate",
+      "name": "Rework rate",
+      "definition": "Units requiring correction divided by units completed",
+      "value": {
+        "type": "decimal_string",
+        "value": "0.12",
+        "unit": "ratio"
+      },
+      "aggregation": "ratio",
+      "source_refs": [
+        "SRC-001"
+      ],
+      "limitations": [
+        "Synthetic example: 6 of 48 completed units required correction; 6/48 = 0.125, rounded to two decimal places using ties-to-even = 0.12."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-001",
+      "description": "Aggregated baseline export",
+      "system": "Jira",
+      "reference": "baseline-aggregates.csv",
+      "storage": "included_aggregate",
+      "sha256": "f9b536d5d48ca418ddda6107a93d418789d29df22d8a0f8d34aa3000a2a8d884",
+      "contains_personal_data": false
+    }
+  ],
+  "ownership": {
+    "accountable_owner": {
+      "role": "Program Manager"
+    },
+    "approver": {
+      "role": "Business Sponsor"
+    }
+  },
+  "approval": {
+    "status": "approved",
+    "approved_at": "2026-11-23T09:00:00-05:00",
+    "decision_record_ref": "DEC-2026-042",
+    "scope": "Approved as the comparison baseline for the named AI change"
+  },
+  "planned_review": {
+    "review_date": "2027-02-23",
+    "comparison_purpose": "Measure realized cycle-time, effort and rework changes",
+    "outcome_evidence_source": "Operational reporting system"
+  },
+  "limitations": [
+    "Synthetic aggregate example; not evidence of realized benefits."
+  ]
+}
